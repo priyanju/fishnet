@@ -1,0 +1,147 @@
+<!--div ng-include="'sidebar.html'"></div>
+<div class="page home-page active">     
+<div ng-include="'header.html'"></div>
+
+<section class="updates section-padding section_top">
+    <div class="container-fluid">
+        <div ng-show="myLoader" class="spinner">
+            <img src="assets/images/spinner.gif" class="myspin">
+        </div> 
+        <div class="row">
+            <div class="col-lg-5 col-md-12">
+                <header> 
+                    <h1 class="h3 display recentsalrm"><i class="fa fa-bell-o"></i>Recent Alarms</h1>
+                </header>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6" ng-repeat="alarm in RecentAlarm">
+                        <div class="card alarm">
+                            <h3>{{alarm.updated_at | date:'dd-M-yyyy'}} ({{alarm.created_at | date : "shortTime"}} - {{alarm.updated_at | date : "shortTime"}})</h3>
+                            <h2>{{ alarm.machine.machine_name}}</h2>
+                            <p>{{alarm.alarm_type}}-{{alarm.alarm_number}} :  {{ alarm.alarm_message }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <header>
+                    <h1 class="h3 display"><i class="fa fa-laptop"></i>Overall Reports</h1>
+                </header>
+                <div class="card">
+                    <div class="card-block tablescroll">
+                        <table class="table table-striped table-sm table_front">
+                            <thead>
+                                <tr>
+                                    <th>Machine</th>
+                                    <th>Alarm Type</th>
+                                    <th>Updated at</th>
+                                </tr>
+                            </thead>
+                            <tbody >
+                                <tr ng-repeat="alarm in Alarm">
+                                    <td>{{ alarm.machine.machine_name}}</td>
+                                    <td>{{alarm.alarm_type}}-{{alarm.alarm_number}} :  {{ alarm.alarm_message }}</td>
+                                    <td>{{alarm.updated_at | date:'dd-M-yyyy'}} ({{alarm.created_at | date : "shortTime"}} - {{alarm.updated_at | date : "shortTime"}})</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+                </div>
+            </div>
+        </section>
+
+        <div ng-include="'footer.html'"></div>
+ </div-->
+<div ng-include="'sidebar.html'"></div>
+<div class="page home-page active">     
+<div ng-include="'header.html'"></div>
+
+<section class="updates section-padding section_top">
+    <div class="container-fluid">
+        <div ng-show="myLoader" class="spinner">
+            <img src="assets/images/spinner.gif" class="myspin">
+        </div> 
+        <div class="row">
+        <!-- Daily Feed-->
+            <div class="col-lg-5 col-md-12">
+                <header> 
+                    <h1 class="h3 display recentsalrm"><i class="fa fa-bell-o"></i>Recent Alarms</h1>
+                </header>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6" ng-repeat="alarm in AlarmDataRe">
+                    <!-- Monthly Usage-->
+                        <div class="card alarm">
+                             <h1>{{ alarm.machine.machine_name}}</h1>
+                            <h2>{{alarm.created_at | date:'dd-MM-yyyy'}} ({{alarm.created_at | date : "shortTime"}} - {{alarm.updated_at | date : "shortTime"}})</h2>
+                            <h2>Duration : {{alarm.hour}}:{{alarm.minute}}:{{alarm.second}} </h2>
+                            <p>{{alarm.alarm_type}}-{{alarm.alarm_number}} :  {{ alarm.alarm_message }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                 <header>
+                    <h1 class="h3 display"><i class="fa fa-laptop"></i>Internet Status</h1>
+                </header>
+                <div class="card">
+                    <div class="card-block tablescroll">
+                        <table class="table table-striped table-sm table_front">
+                            <thead>
+                                <tr>
+                                    <th>S.No</th>
+                                   
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                     <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody >
+                                <tr ng-repeat="conn in connectionStatus">
+                                    <td>{{ $index + 1}}</td>
+                                    <td>{{conn.date}}</td>
+                                    <td>{{conn.time}}</td>
+                                    <td>{{conn.status}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br>
+                <header>
+                    <h1 class="h3 display"><i class="fa fa-laptop"></i>Overall Alarm Reports</h1>
+                </header>
+                <div class="card">
+
+                    <div class="card-block tablescroll">
+                        <table class="table table-striped table-sm table_front">
+                            <thead>
+                                <tr>
+                                    <th>Machine</th>
+                                    <th>Alarm Type</th>
+                                    <th>Time</th>
+                                    <th>Duration</th>
+                                </tr>
+                            </thead>
+                            <tbody >
+                                <tr ng-repeat="alarm in AlarmData">
+                                    <td>{{ alarm.machine.machine_name}}</td>
+                                    <td>{{alarm.alarm_type}}-{{alarm.alarm_number}} :  {{ alarm.alarm_message }}</td>
+                                    <td>{{alarm.created_at | date:'dd-MM-yyyy'}} ({{alarm.created_at | date : "shortTime"}} - {{alarm.updated_at | date : "shortTime"}})</td>
+                                    <td>{{alarm.hour}}:{{alarm.minute}}:{{alarm.second}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+                </div>
+            </div>
+     
+       </section>
+
+        <div ng-include="'footer.html'"></div>
+ </div>

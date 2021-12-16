@@ -1,0 +1,117 @@
+
+ <div ng-include="'sidebar.html'"></div>
+ <div class="page home-page active">     
+ <div ng-include="'header.html'"></div>
+
+ 
+ <section class="statistics section-padding section-no-padding-bottom section_top">
+    <!-- <section class="updates section-padding section-no-padding-bottom section_top"> -->
+        
+               <div class="container-fluid" ng-init="shiftinit()">
+                   <div ng-include="'breadcrumb.html'"></div>
+                   <div class="row">
+                     <div ng-show="myLoader" class="spinner">
+                 <img src="assets/images/spinner.gif" class="myspin">
+               </div>
+                       <!-- Daily Feed-->
+                       <div class="col-lg-12">
+                           <header>
+                               
+
+                                <!-- <h1 class="h3 display"><i class="fa fa-laptop"></i>Net Size 
+                                   
+                               <a href="" class="btn_add" data-toggle="modal" data-target="#exampleModalLabel1" ng-click="cleandata1()"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                              <span class="note">(Note: Please register your break details under the actions tab for each shift)</span> -->
+                             <!-- </h1>
+                             <h1 class="h3 display"><i class="fa fa-laptop"></i>NetSize Types </h1> --> 
+                             <!-- <ul class="nav nav-pills mb-3" role="tablist"><br>
+                                    <li class="nav-item" ><a  lass="nav-link active" role="pill" data-toggle="tab" aria-selected="true">NetSize</a></li>
+                                    <li class="nav-item"><a  lass="nav-link " role="pill" data-toggle="tab" aria-selected="false">NetSize Types</a>
+                                   </li>
+                                   
+                                  </ul> -->
+                                  
+
+
+
+
+                                  <ul class="nav nav-pills mb-3"  role="tablist">
+                                        <li class="nav-item" ng-click="pageverification('/#!/netsize')">
+                                          <a class="nav-link"  data-toggle="pill" role="tab" aria-controls="pills-home" aria-selected="true">NetSize</a>
+                                        </li>
+                                        <li class="nav-item" ng-click="pageverification('/#!/netsizetype')">
+                                          <a class="nav-link active"  data-toggle="pill" role="tab" aria-controls="pills-profile" aria-selected="false">NetSize Types</a>
+                                        </li>
+                                        <li >
+                                        <input class="base" ng-model = "query" placeholder="Search NetSize Types" >
+                                    </li>
+                                      </ul>
+                                      <!-- <div class="tab-content" id="pills-tabContent">
+                                        <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">...</div>
+                                        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">...</div>
+                                        <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
+                                      </div> -->
+                                    
+
+
+
+                           </header>
+                           
+                            <!-- Search: <input ng-model="query"><br> -->
+                           <button class="next_tab" ng-repeat="test in resnetval  " >{{test.length_type}}</button>
+                           <!-- <span ng-show="resnetval.length==0 ">No results.</span>  -->
+
+                           <span ng-if="(resnetval | filter:query).length==0"><h2 style="margin-left: 26px"><b>No Results Found</b></h2></span>
+
+
+                           <!-- <div class="card">
+                               <div class="card-block tablescroll">
+                                   <table class="table table-striped table-sm table_front">
+                                       <thead>
+                                           <tr>
+                                               <th>Shift Start Time</th>
+                                               <th>Shift End Time</th>
+                                                <th>Shift</th>
+                                               <th>Actual Working Hours</th>
+                                               <th>Action</th>
+                                           </tr>
+                                       </thead>
+                                       <tbody>
+                                           <tr ng-repeat="shift in shiftstrans">
+                                               <td>{{ shift.start_time }}</td>
+                                               <td>{{ shift.end_time }}</td>
+                                                <td>{{ shift.shift_no }}</td>
+                                               <td>{{ shift.duration }}</td>
+                                               <td>
+                                                   <ul class="item-actions-list">
+                                                       <li>
+                                                           <a class="remove"> <i class="fa fa-trash-o " confirmed-click="delete1(shift.id)"  ng-confirm-click="Do you want to delete"></i> </a>
+                                                       </li>
+                                                       <li>
+                                                           <a class="edit" data-toggle="modal" data-target="#exampleModalLabel1" title="Edit" ng-click="edit1(shift.id)"> <i class="fa fa-pencil"></i> </a>
+                                                       </li>
+                                                       <li>
+                                                           <a class="create" title=" creation"> <i class="fa fa-plus" ng-click="breaktime(shift.id)"></i> </a>
+                                                       </li> 
+                                                   </ul>
+                                               </td>
+                                           </tr>
+                                       </tbody>
+                                   </table>
+                               </div>
+                           </div> -->
+                       </div>
+   
+                   </div>
+               </div>
+           </section>
+   
+
+       
+    
+            </div>
+        </div>
+    
+             <div class="foot" ng-include="'footer.html'"></div>
+     </div>
+    

@@ -1,0 +1,311 @@
+<script src="assets/js/filesaver.js" type="text/javascript"></script>
+
+<div ng-include="'sidebar.html'"></div>
+   <div class="page home-page active"  ng-clock="true">     
+   <div ng-include="'header.html'"></div>
+
+
+
+
+     <section class="statistics section-padding section-no-padding-bottom section_top" >
+             <div ng-include="'breadcrumb.html'"></div>
+            <div class="container-fluid">
+                <header>
+                    <div ng-show="myLoader" class="spinner">
+                        <img src="assets/images/spinner.gif" class="myspin">
+                    </div>
+
+
+              <h1 class="h3 display reprttop">Report
+                <a href="" class="btn_top" ng-hide="split == 'Idlereason'" ng-click="exportData()"><i class="fa fa-external-link" aria-hidden="true"></i>Export Table</a>
+                 <a href="" class="btn_top" ng-show="split == 'Idlereason'" ng-click="exportData1()"><i class="fa fa-external-link" aria-hidden="true"></i>Export Table</a>
+                <a href="" class="btn_top" ng-click="exportclick()" ng-show="show==2"><i class="fa fa-external-link" aria-hidden="true"></i>Export Chart</a>
+              </h1>
+              </header>
+                <div class="card card_status">
+                    <div class="card-block">
+                         <form name="repot">
+                        <div class="row">
+                               
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <label>Select Machine</label>
+                                        <div class="select">
+                                            <select name="account" class="form-control" ng-options="mc.id as mc.machine_name for mc in userdetails.machine" ng-model="MachineID" ng-change="checkingmachineid()">
+                                                <option value="">ALL</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 report_type">
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <label>Select Type</label>
+                                        <!--div class="filter_type d-flex">
+                                            <span class="d-flex align-items-center">
+                                                <input type="radio" name="shift" ng-change="mychange(types)"  ng-Required="true" ng-model="types" value="Shiftwise"/>&nbsp;ShiftWise
+                                            </span>
+                                            <span class="d-flex align-items-center">
+                                                <input type="radio" name="shift" ng-change="mychange(types)" value="Operatorwise"  ng-model="types"/>&nbsp;OperatorWise
+                                            </span>&nbsp;
+                                            <span class="d-flex align-items-center">
+                                                <input type="radio" name="shift" ng-change="mychange(types)" value="Datewise"  ng-model="types"/>&nbsp;DateWise
+                                            </span>&nbsp;
+                                              <span class="d-flex align-items-center">
+                                                <input type="radio" name="shift" ng-change="mychange(types)" value="Idlereason"  ng-model="types"/>&nbsp;Idle Reason
+                                            </span>
+                                        </div -->
+                                         <div class="select ">
+                                            <select class="form-control" ng-model="types" ng-Required="true" ng-change="mychange(types);splittype=''" ng-options="val for (key , val) in typewise">
+                                                <option value="">Select type</option>
+                                            </select>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                             <div class="col-md-2 report_type" ng-hide="wise == 'Datewise'" >
+                                <div class="form-group">
+                                
+                                      <label>Select Split</label>
+                                    <div class="select ">
+                                            <select class="form-control" ng-model="splittype" ng-change="splitchange(splittype)" ng-options="val for (key , val) in splitwise">
+                                                <option value="">ALL</option>
+
+                                            </select>
+                                        </div>
+                                </div>
+                            </div>
+                             
+                            <div class="col-md-2">
+                                <div class="form-group" moment-picker="from_date"  format="YYYY-MM-DD" max-date="momentToday">
+                                    <label>From Date</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" ng-Required="true"  ng-model="from_date"  >
+                                        <span class="input-group-addon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2" >
+                                <div class="form-group" moment-picker="to_date"   format="YYYY-MM-DD" min-date="from_date" max-date="momentToday">
+                                    <label>To Date</label>
+                                    <div class="input-group">
+                                        <input type="text" ng-Required="true" class="form-control" ng-model="to_date">
+                                        <span class="input-group-addon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ng-show="momentToday != from_date"<div class="col-md-2" ng-show="momentToday == from_date ">
+                                <div class="form-group" moment-picker="to_date"  format="YYYY-MM-DD" min-date="momentToday" max-date="momentToday">
+                                    <label>To Date</label>
+                                    <div class="input-group"><span class="input-group-addon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+                                        <input type="text" class="form-control" ng-Required="true" ng-model="to_date">
+                                    </div>
+                                </div>
+                            </div> -->
+
+                             <div class="col-md-2" ng-show="wise=='Shiftwise'">
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <label>Select Shift</label>
+                                        <div class="select">
+                                            <select name="account" class="form-control" ng-options="sh.id as sh.shift_no for sh in userdetails.shift" ng-model="ShiftID"  ng-change="checkingshiftid()">
+                                                <option value="">ALL</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                            <div class="col-md-2" ng-show="wise=='Operatorwise'">
+                                <div class="form-group">
+                                    <label>Operator</label>
+                                    <div class="select">
+                                        <select name="account" class="form-control" ng-options="operator.id as operator.name for operator in userdetails.operator" ng-model="operator_id"  class="btn btn-default select-width selectpicker form-control" ng-change="checkingopid()">
+                                            <option value="">Select Operator</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1"> 
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <button class="btn btn-success btn_report" ng-click="generate_report(wise,operator_id)" ng-disabled="repot.$invalid">View Report</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </section>
+        
+        <!-- <button ng-click="showChart()">Show</button> -->
+
+        <div class="container-fluid" ng-init="show = 1">
+            <ul class="nav nav-tabs" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link " ng-class="{active :show ==1}"  data-toggle="tab" href="" ng-click="show = 1" role="tab">Table</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" ng-class="{active :show ==2}" ng-show="split != 'Idlereason'" data-toggle="tab" href="" ng-click="show = 2;generate_chartreport()" role="tab">Chart</a>
+              </li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+              <div class="tab-pane active" ng-show="show==1" role="tabpanel">
+                <section class="updates">
+                    <!-- div ng-show="items.length == 0">No Data</div-->
+                    <div class="row">
+                        <!-- Daily Feed-->
+                        <div class="col-lg-12" ng-show=" split != 'Idlereason'">
+                            <div class="card bar-chart-example">
+                                <div class="card-block table_overflow" id="exportable">
+                                    <table class="table table-striped">
+                                         <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Shift</th>
+                                                <th>Time</th>
+                                                <th>Operator Name</th>
+                                               
+                                                <th>Machine Name</th>
+                                               <!--  <th>Machine ID </th>   -->                                         
+                                                <th>Run Time(Hrs)</th>
+                                                 <th>Idle Time(Hrs)</th>
+                                               <!--   <th>Idle Reason</th> -->
+                                                <th>Stop Time(Hrs)</th>
+                                                <th>Total Time</th>
+                                                <th>Actual Working Hours</th>
+                                                <th>Utilization(%.)</th>
+                                                <!-- <th>Operator Efficiency</th> -->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="item in items" ng-click="showme=true">
+                                                <td>{{item.date}}</td>
+                                                <td>{{item.shift_no}}</td>
+                                                <td>{{item.time}}</td>
+                                                <td>{{item.operator_name}}</td>
+                                              <!--   <td>{{item.operator_id}}</td> -->
+
+                                                <td>{{item.machine_name}}</td>
+                                                 <td>{{item.run_time}}</td>
+                                                <td>{{item.idle_time}}</td>
+                                               <!--  <td>{{item.reason}}</td> -->
+                                                <td>{{item.stop_time}}</td>  
+                                                <td>{{item.total_time}}</td>                                         
+                                                <td>{{item.actual_shifttime}}</td>
+                                                <td>{{item.utilization}}</td>
+                                            </tr>
+                                            <!-- <tr ng-show="wise=='Datewise'&&showme">
+                                              <td><button class="btn btn-success btn-sm btn_report" style="position: absolute;margin-top: -15px;" ng-click="generate_report(wise)" ng-disabled="isdisabled"><i class="fa fa-share-square" aria-hidden="true"></i> Shift</button></td>
+                                              <td><button class="btn btn-success btn-sm btn_report" style="position: absolute;margin-top: -15px;" ng-click="generate_report(wise)" ng-disabled="isdisabled"><i class="fa fa-clock-o" aria-hidden="true"></i> Time</button></td>    
+                                            </tr>
+                                            <tr ng-show="wise=='Shiftwise'&&showme">
+                                              <td><button class="btn btn-success btn-sm btn_report" style="position: absolute;margin-top: -15px;" ng-click="generate_report(wise)" ng-disabled="isdisabled"><i class="fa fa-clock-o" aria-hidden="true"></i> Time</button></td>
+                                            </tr> -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                <!--  new reason view -->
+                                 <div class="col-lg-12" ng-show="split == 'Idlereason'">
+                            <div class="card bar-chart-example">
+                                <div class="card-block table_overflow" id="exportable1">
+                                    <table class="table table-striped">
+                                         <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Shift</th>
+                                                <th>Time</th>
+                                                <th>Machine Name</th>
+                                                <th>Machine ID </th> 
+                                                <th>Operator Name</th>
+                                                <th>Operator ID</th>
+                                                 <th>Idle Time(Hrs)</th>
+                                                 <th>Idle Reason</th>
+                                                 <th>Idle Duration</th>
+                                              <!--   <th>Total Time</th> -->
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="item in reasonitem  track by $index"  ng-hide="item =='no data'"  ng-click="showme=true">
+                                                <td>{{item.date}}</td>
+                                                <td>{{item.shift_no}}</td>
+                                                <td>{{item.time}}</td>
+                                                <td>{{item.machine_name}}</td>
+                                                 <td>{{item.machine_type}}</td>
+                                                 <td>{{item.operator_name}}</td>
+                                                 <td>{{item.operator_id}}</td>
+                                                <td>{{item.idle_time}}</td>
+                                                <td>{{item.reason}}</td>
+                                                <td>{{item.duration}}</td>  
+                                               <!--  <td>{{item.total}}</td> -->
+                                            </tr>
+                                            <tr>
+                                               <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                 <td></td>
+                                                <td></td>
+                                                 <td></td> 
+                                                 <td></td>
+                                                <td style="font-weight: bold;">Total Duration</td>  
+                                                <td style="font-weight: bold;">{{reasonitem1.total}}</td>
+                                            </tr>
+                                                
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                <!-- end  -->
+
+                    </div>
+                </section>
+              </div>
+              <div class="tab-pane active" ng-show="show==2" role="tabpanel">
+                <!-- <button ng-click="showChart()">Show</button> -->
+                <div class="container-fluid report_chart"> <!-- ng-show="showme" -->
+                    <div class="row overall_chart">
+                        <div class="col-lg-4" ng-if="overallchartdatas[0].chart_value" >
+                            <div class="card report_pie_chart">  
+                                <highchart  config="overallchartdatas[0].chart_value"></highchart>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row individual_chart">
+                        <div class="col-lg-4" ng-repeat="chart in chartdatas" ng-if="chart.value" >
+                            <div class="card report_pie_chart">  
+                                <highchart  config="chart.chart_value"></highchart>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row individual_chart">
+                        <div class="col-lg-4" ng-repeat="chart in chartdatas" ng-if="!chart.value" >
+                            <div class="card report_pie_chart">  
+                              <p>NO DATA</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <a id="resetChart" href="#">Reset</a> -->
+                </div>
+              </div>
+            </div>
+        </div>
+ <div ng-include="'footer.html'"></div>
+ </div>
+

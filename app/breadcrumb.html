@@ -1,0 +1,21 @@
+<!--  <div class="breadcrumb-holder container-fluid">
+                    <ul class="breadcrumb">
+                      <li class="breadcrumb-item"><a href="#!/dashboard">Home</a></li>
+                      <li class="breadcrumb-item active">{{curPath  | capitalize}}</li>
+                      <div class="last">Logged in <i class="fa fa-calendar"></i> {{clock | date}} <i class="fa fa-clock-o"></i>{{clock | date:'hh:mm:ss'}}</div>
+                    </ul>
+                  </div> -->
+
+                  <div class="container-fluid breadcums-holder">
+            <ol class="breadcrumb">
+             
+                <li class="breadcrumb-item"><a href="#!/dashboard">Home</a></li>
+                <li class="breadcrumb-item active">{{curPath  | capitalize}}</li>
+            </ol>
+            <span class="float-right d-flex align-items-center">Logged in
+              <img src="assets/images/calendar.png" width="15px" height="15px">
+              {{ clock | date:'dd/MM/yyyy'}}
+              <img src="assets/images/time.png" width="15px" height="15px">
+              {{ clock | date:'hh:mm:ss a'}}
+            </span>
+          </div>

@@ -1,0 +1,593 @@
+<!-- <style type="text/css">
+.running{
+    background-color: rgb(44,190,99);
+}
+.idle {
+  background-color: rgb(232,162,73);
+
+}
+.stopped{
+  background-color: rgb(236,85,80);
+}
+.nodata{
+  background-color: #444444;
+}
+
+
+.tdtable{
+        border-left: 1px solid #dddddd;
+        font-family:"Montserrat";
+        font-size: 15px;
+        text-align: center;
+        color: grey;
+        padding: 10px;
+        width: 30%;
+}
+.tdtitle{
+        border-left: 1px solid #dddddd;
+        font-family:"Montserrat";
+        font-size: 15px;
+        text-align: center;
+        color: #4D4B4C;
+        padding: 10px; 
+        width: 30%;
+}
+
+.bg_grey{
+        background-color: #f2f2f2;
+}
+
+.ispan{
+  color: black !important;
+font-size: 14px !important;
+}
+
+
+</style> 
+<div ng-include="'sidebar.html'"></div>
+   <div class="page home-page active">     
+   <div ng-include="'header.html'"></div>
+   
+
+ 
+ <section class="statistics section-padding section-no-padding-bottom section_top" ng-init="dashboard()">
+           <div ng-include="'breadcrumb.html'"></div>
+          <div class="container-fluid">
+          <header> 
+           <div ng-show="myLoader" class="spinner">
+                <img src="assets/images/spinner.gif" class="myspin">
+            </div>
+
+              <h1 class="h3 display top">
+                <img src="assets/images/dashboard-dark.png" width="30px" height="30px">
+                Dashboard
+              <ul>
+                <li><span class="dot_running"></span>Running</li>
+                <li><span class="dot_idle"></span>Idle</li>
+                <li><span class="dot_stop"></span>Stop</li>
+                <li><span class="dot_problem"></span>No Data</li>
+              </ul>
+              </h1>
+            </header>
+            <div class="row d-flex align-items-stretch">
+           
+            <div class="col-5" ng-repeat="y in cardnames">
+                <div class="last_update_time">
+                   <span class="d-flex align-items-center justify-content-end">
+                    <label>Start Time:</label>
+                    <div ng-show="y.first_update != 0" >
+                    <img src="assets/images/calendar-color.png" width="13px" height="13px">
+                    {{y.first_update | date:'dd/MM/yyyy'}}
+                    <img src="assets/images/time-color.png" width="13px" height="13px">
+                    {{y.first_update | date:'hh:mm:ss a'}}
+                  </div>
+                   <div ng-show="y.first_update == 0">
+                    <img src="assets/images/calendar-color.png" width="13px" height="13px">
+                    00/00/00
+                    <img src="assets/images/time-color.png" width="13px" height="13px">
+                    00:00:00 AM
+                  </div>
+                  </span> 
+
+                 
+                  <span class="d-flex align-items-center justify-content-end">
+                    <label>Last Update:</label>
+                    <div ng-show="y.last_update != 0" >
+                    <img src="assets/images/calendar-color.png" width="13px" height="13px">
+                    {{y.last_update | date:'dd/MM/yyyy'}}
+                    <img src="assets/images/time-color.png" width="13px" height="13px">
+                    {{y.last_update | date:'hh:mm:ss a'}}
+                  </div>
+                   <div ng-show="y.last_update == 0">
+                    <img src="assets/images/calendar-color.png" width="13px" height="13px">
+                    00/00/00
+                    <img src="assets/images/time-color.png" width="13px" height="13px">
+                    00:00:00 AM
+                  </div>
+                  </span>
+                </div>
+                <div class="wrapper data-usage">
+                  <div class="wrapper_idle"  ng-class="{running :y.status =='3' ,stopped :y.status=='0',idle : y.status == '1',nodata: y.status != '1' && y.status !='0' && y.status != '3'}">
+                  <h2 class="display h4"><a>{{y.machine_name}}</a></h2>
+                  <div class="row d-flex align-items-center">
+                    <div class="col-sm-12">
+                         <percent-display percent="y.utilization" side="140" colors="#ede7f6 #A179C7" style="margin-left: 33%;"></percent-display>
+                    
+                    </div>
+                     <div class="col-sm-12"><span><a style="cursor: none;" href=""  ng-show="y.job_name!=null">{{y.job_name}}</a></span></div>
+                  
+                  </div>
+                  </div>
+                  <div class="row status_icon">
+                    <div class="col-md-12 status_first"  >
+                     <span class="ispan d-flex justify-content-center align-items-center"><i class="fa fa-play"></i> Run Time</span>
+                     <span class="ispan">{{y.runtime}}</span>
+                    </div>
+                  </div>
+                  <div class="row status_icon">
+                    <div class="col-md-6 status_second">
+                       <span class="ispan d-flex justify-content-center align-items-center"><i class="fa fa-pause"></i>  Idle Time </span>
+                     <span class="ispan">{{y.idletime}}</span>
+                    </div>
+                     <div class="col-md-6 status_second">
+                      <span class="ispan  d-flex justify-content-center align-items-center"><i class="fa fa-stop"></i> Stop Time </span>
+                     <span class="ispan">{{y.stoptime}} </span>
+                    </div>
+                    </div>
+                    <div class="row status_icon">
+                    <div class="col-md-12  status_second"  >
+                      <span class="ispan">Total Time  </span>
+                     <span class="ispan"> {{y.total}} <span>
+                    </div>
+                  </div>
+                </div>
+              </div> 
+             
+            </div>
+          </div>
+        </section>
+{{$scope.machineList.length}}
+        <section class="updates section-padding section_top" ng-if="user_type==1">
+  <div class="container-fluid">
+      <div class="row" ng-init="fileInit()">
+         
+          <div class="col-lg-12">
+              <header>
+
+                  <h1 class="h3 display"><i class="fa fa-laptop"></i>File Upload
+                  <a href="" class="btn_add" data-toggle="modal" data-target="#fileModalLabel" ng-click="fileAdd()" ><i class="fa fa-plus" aria-hidden="true"></i></a>
+                </h1>
+              </header>
+              <div class="card">
+                  <div class="card-block tablescroll">
+                      <table class="table table-striped table-sm table_front">
+                          <thead>
+                              <tr>
+                                 <th>#</th>
+                                 <th>Date</th>
+                                 <th>Time</th>
+                                 <th>Machine Name / IP</th>
+                                 <th>Machine IP</th>
+                                 <th>Status</th>
+                                  <th>File Name</th>
+                                 <th>Action</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr ng-repeat="user in filedetailGet">
+                                 <td>{{$index + 1}}</td>
+                                 <td>{{ user.date }}</td>
+                                 <td>{{ user.time }}</td>
+                                 <td>{{ user.machine.machine_name }}</td>
+                                 <td> {{ user.machine.machine_ip }}</td>
+                                 <td ng-show="user.status == 0">Updated</td>
+                                 <td ng-show="user.status == 1">Waiting</td>
+                                 <td>{{user.file_path}}</td>
+                                
+                                 <td>
+                                      <ul class="item-actions-list">
+
+                                          <li>
+                                              <a class="edit" data-toggle="modal"  data-target="#fileModalLabel" title="Edit" ng-click="edit(user.id)"> <i class="fa fa-pencil"></i> </a>
+                                          </li>
+                                      </ul>
+                                  </td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+          </div>
+
+      </div>
+  </div>
+</section> -->
+
+
+<style type="text/css">
+.running{
+    background-color: rgb(44,190,99);
+    width: 110px;
+}
+.idle {
+  background-color: rgb(232,162,73);
+
+}
+.stopped{
+  background-color: rgb(236,85,80);
+}
+.nodata{
+  background-color: #444444;
+}
+
+
+.tdtable{
+        border-left: 1px solid #dddddd;
+        font-family:"Montserrat";
+        font-size: 15px;
+        text-align: center;
+        color: grey;
+        padding: 10px;
+        width: 30%;
+}
+.tdtitle{
+        border-left: 1px solid #dddddd;
+        font-family:"Montserrat";
+        font-size: 15px;
+        text-align: center;
+        color: #4D4B4C;
+        padding: 10px; 
+        width: 30%;
+}
+
+.bg_grey{
+        background-color: #f2f2f2;
+}
+
+.ispan{
+  color: black !important;
+font-size: 14px !important;
+}
+.statistics_modal .wrapper_idle{
+   margin: 0!important; 
+}
+.statistics_modal .modal-body{
+  padding:0px!important;
+}
+.statistics_modal .modal-dialog {
+  max-width: 700px;
+}
+.statistics_close {
+  position: absolute;
+    right: -15px;
+    z-index: 99;
+    top: -15px;
+}
+.statistics_modal .col-md-6{
+  padding: 0;
+}
+.dashboard-machine .dashboard_specs{
+  cursor: pointer;
+  max-width: 12%;
+}
+.machine-registration .col-sm-12 p {
+  /* top: 50%;
+left: 50%;
+position: absolute;
+transform: translate(-50%,-50%);
+display: block;
+   transform: translateX(-50%) translateY(-50%); */
+}
+.machine-registration .col-sm-12 .ngpercentdisplay {
+    margin: 20px auto 20px auto!important;
+}
+.machine-registration .ngpercentdisplay:before {
+    width: 75%!important;
+    height: 75%!important;
+}
+.machine-registration .ngpercentdisplay {
+    background-color: rgba(29, 29, 29, 0.03) !important;
+}
+.machine-registration .ngpercentdisplay:after {
+    font-size: 27px;
+    font-weight: 200!important;
+    top: 40%;
+}
+.machine-registration table tr td {
+    border-right: 1px solid #e6e6e6;
+    padding: 15px 10px;
+}
+.utilization {
+    width: 130px;
+    position: relative;
+}
+.utilization p{
+  position: absolute;
+    top: 50%;
+    left: 50%;
+}
+</style> 
+<div ng-include="'sidebar.html'"></div>
+   <div class="page home-page active">     
+   <div ng-include="'header.html'"></div>
+   
+
+ 
+ <section class="statistics section-padding section-no-padding-bottom section_top" ng-init="dashboard()">
+    <div ng-show="myLoader" class="spinner">
+        <img src="assets/images/spinner.gif" class="myspin">
+     </div>
+      <header style="background: #fff; padding: 20px; box-shadow: 3px 3px 3px #eaeaea;border-top: 1px solid #e2e2e2;"> 
+     <h1 class="h3 display top m-0"><i class="fa fa-laptop"></i>Overall Machine Status
+     <ul>
+       <li><span class="dot_running"></span>Running</li>
+       <li><span class="dot_idle"></span>Idle</li>
+       <li><span class="dot_stop"></span>Stop</li>
+       <li><span class="dot_no_data"></span>Main Off</li>
+
+       <!-- <li><span class="dot_nodata"></span>No Data</li> -->
+       <!-- <li ng-click="dashboard()" style="cursor:pointer"><i class="fa fa-refresh "></i></li> -->
+     </ul>
+     <div class="float-right entry_time">Shift : {{cardnames.data[""][0].shift}} | Shift Time: {{cardnames.data[""][0].start_time  | date:'dd-MM-yyyy hh:mm a'}} &nbsp;<span>Today:</span>{{ clock | date:'dd-MM-yyyy hh:mm:ss a'}}</div>
+     </h1>
+   </header>
+          <div class="container-fluid" ng-repeat="(key,val) in cardnames.data">
+  
+          <div>         
+            <div class="row" style="margin-bottom:5px; margin-top: 10px;">
+              <div style="text-align: left;border-bottom:1px solid #ddd;padding-bottom: 10px;" class="col col-100">Cell - 1</div>
+               <div style="text-align: right;border-bottom:1px solid #ddd;  padding-bottom: 10px;" class="col col-100">
+                  <!-- <span style="float:left;font-size:16px">{{key}}</span> -->
+                  <!-- {{cardnames.count[key]}} -->
+                  <span class="statusHeader" ng-click="statusfill = ''" style="font-size:14px; color: #f69123" >Machines({{val.length}})</span>
+                  <span class="statusHeader" ng-click="statusfill = 3"  style="font-size:14px; color: #396ae2;">Running({{cardnames.count[key].running -- 0}})</span>
+                  <span class="statusHeader" ng-click="statusfill = 1"  style="font-size:14px; color: #396ae2;">Idle({{cardnames.count[key].idle}})</span>
+                  <span class="statusHeader" ng-click="statusfill = 0" style="font-size:14px; color: #396ae2;">Stop({{cardnames.count[key].stop -- 0}})</span>
+                  <span class="statusHeader" ng-click="statusfill = 1"  style="font-size:14px; color: #396ae2;">Main Off({{(cardnames.count[key].no_data) -- (cardnames.count[key].false)}})</span>
+
+              </div> 
+             </div>    
+            <div class="row dashboard-machine" >
+              <div ng-repeat="x in val"  class="col-sm-1 dashboard_specs" ng-click="machine_page_redirect(x.machine_id)" data-toggle="modal" data-target="#exampleModalLong">
+              
+                <div class="wrapper data-usage" ng-click="machineclick(y);">
+                  <div class="wrapper_idle" ng-class="{running :x.status =='3' ,stopped :x.status=='0',idle: x.status == '1',nodata : x.status != '3' && x.status !='0' && x.status != '1'}">
+                    <div class="row d-flex align-items-center">
+                      <div class="col-sm-12">
+                        <percent-display percent="x.utilization" side="50" colors="#ede7f6 #A179C7"><span></span></percent-display>
+                        <p class="text-center">UTILIZATION</p>
+                      </div>
+                    
+                    </div>
+                  </div>
+                </div>
+                <h2 class="display h4">
+                  <a href="" >{{x.machine_name}}</a>
+                </h2>
+              </div>
+            </div>
+          </div>
+</section>
+        <div class="modal fade statistics_modal" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLong" aria-hidden="true">
+            <div ng-show="myLoader1" class="spinner">
+                <img src="assets/images/spinner.gif" class="myspin">
+            </div> 
+          <div class="modal-dialog" role="document" ng-init="modelshow=0">
+              
+           <div class="modal-content" >
+             
+              <button type="button" class="close statistics_close" data-dismiss="modal" aria-label="Close" ng-click="loadStatus()">
+                <span aria-hidden="true"><i class="fa fa-times-circle" aria-hidden="true" ng-click="dashboardre()"></i>
+                </span>
+              </button>
+            
+            <div class="modal-body machine-registration">
+                
+            <div class="row m-0">
+              <div class="col-md-6 " ng-class="{running :singleres.machine_status =='3' ,stopped :singleres.machine_status	=='100',idle: singleres.machine_status == '1',nodata : singleres.machine_status != '3' && singleres.machine_status !='100' && singleres.machine_status != '1'}">
+                <div class="wrapper data-usage">
+                  <div class="wrapper_idle" ng-class="{running :singleres.machine_status =='3' ,stopped :singleres.machine_status	=='100',idle: singleres.machine_status == '1',nodata : singleres.machine_status != '3' && singleres.machine_status !='100' && singleres.machine_status != '1'}">
+                  <h2 class="display h4">
+                    <a href=""  onMouseOver="this.style.color='black'" onMouseOut="this.style.color='#fff'">{{singleres.machine_name}}</a>
+                  </h2>
+                  <div class="row"></div>
+                
+                  <div class="row d-flex align-items-center">
+                    <div class="col-sm-12 ">
+                      <div class=" utilization">
+                      <percent-display percent="singleres.utilization" side="220" colors="#ede7f6 #A179C7"></percent-display>
+                      <p class="text-center mt-2" style="color: #fff;">UTILIZATION</p>
+                    </div>
+                    </div>
+                    <!-- <div class="col-sm-12 text-center">
+                      <span>{{singleres.job_name}}
+                      
+                      </span>
+                    </div> -->
+                  
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <table class="table table-striped">
+                  <tr style="font-weight: 500">
+                      <td class="text-center">
+                        <i class="fa fa-clock-o"></i>
+                      </td>
+                      <td > Start Time</td>
+                      <td >{{singleres.start_time | date:'dd-MM-yyyy hh:mm:ss a'}}</td>
+                    </tr>
+
+                    <tr style="font-weight: 500">
+                        <td class="text-center">
+                          <i class="fa fa-clock-o"></i>
+                        </td>
+                        <td > Last Update Time</td>
+                        <td>{{singleres.last_update | date:'dd-MM-yyyy hh:mm:ss a'}}</td>
+                      </tr>
+                <tr>
+                  <td class="text-center">
+                    <i class="fa fa-play"></i>
+                  </td>
+                  <td >Run Time</td>
+                  <td>{{singleres.run_time}}</td>
+                </tr>
+                <tr>
+                  <td class="text-center">
+                    <i class="fa fa-pause"></i>
+                  </td>
+                  <td>Idle Time</td>
+                  <td>{{singleres.idle_time}}</td>
+                </tr>
+                <tr>
+                  <td class="text-center">
+                    <i class="fa fa-stop"></i>
+                  </td>
+                  <td>Stop Time</td>
+                  <td>{{singleres.stop_time}}</td>
+                </tr>
+              
+                <tr >
+                  <td class="text-center">
+                    <i class="fa fa-cut" ></i>
+                  </td>
+                  <td>Thread Cutting</td>
+                  <td>{{singleres.thread}} </td>
+                </tr>
+                <tr >
+                  <td class="text-center">
+                    <i class="fa fa-ban" ></i>
+                  </td>
+                  <td>Knot Count</td>
+                  <td>{{singleres.knot_count}} </td>
+                </tr>
+                <tr >
+                  <td class="text-center">
+                    <i class="fa fa-tachometer" ></i>
+                  </td>
+                  <td>RPM</td>
+                  <td>{{singleres.rpm}} </td>
+                </tr>
+                <tr >
+                  <td class="text-center">
+                    <i  class="fa fa-hashtag" ></i>
+                  </td>
+                  <td>Net Size</td>
+                  <td>{{singleres.tag}}</td>
+                </tr>
+                <tr >
+                  <td class="text-center">
+                    <i class="fa fa-weibo" ></i>
+                  </td>
+                  <td>Weight</td>
+                  <td>{{singleres.weight}} </td>
+                </tr>
+              </table>
+              <!-- HTML
+              
+              Useful for copying and pasting into your HTML (Webfont with CSS or SVG with JS).
+              <i class="fas fa-weight"></i> -->
+              
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="updates section-padding section_top" ng-if="user_type==1">
+  <div class="container-fluid">
+      <div class="row" ng-init="fileInit()">
+         
+          <div class="col-lg-12">
+              <header>
+
+                  <h1 class="h3 display"><i class="fa fa-laptop"></i>File Upload
+                  <a href="" class="btn_add" data-toggle="modal" data-target="#fileModalLabel" ng-click="fileAdd()" ><i class="fa fa-plus" aria-hidden="true"></i></a>
+                </h1>
+              </header>
+              <div class="card">
+                  <div class="card-block tablescroll">
+                      <table class="table table-striped table-sm table_front">
+                          <thead>
+                              <tr>
+                                 <th>#</th>
+                                 <th>Date</th>
+                                 <th>Time</th>
+                                 <th>Machine Name / IP</th>
+                                 <th>Machine IP</th>
+                                 <th>Status</th>
+                                  <th>File Name</th>
+                                 <th>Action</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr ng-repeat="user in filedetailGet">
+                                 <td>{{$index + 1}}</td>
+                                 <td>{{ user.date }}</td>
+                                 <td>{{ user.time }}</td>
+                                 <td>{{ user.machine.machine_name }}</td>
+                                 <td> {{ user.machine.machine_ip }}</td>
+                                 <td ng-show="user.status == 0">Updated</td>
+                                 <td ng-show="user.status == 1">Waiting</td>
+                                 <td>{{user.file_path}}</td>
+                                
+                                 <td>
+                                      <ul class="item-actions-list">
+
+                                          <li>
+                                              <a class="edit" data-toggle="modal"  data-target="#fileModalLabel" title="Edit" ng-click="edit(user.id)"> <i class="fa fa-pencil"></i> </a>
+                                          </li>
+                                      </ul>
+                                  </td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+          </div>
+
+      </div>
+  </div>
+</section>
+  
+       
+        <div ng-include="'footer.html'"></div>
+ </div>
+
+
+<div class="modal fade" id="fileModalLabel" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"> New File Upload</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body machine-registration">
+              
+<div ng-show="machineipstatus == 1">
+    <label>Machine Name : </label><span>{{machineip}}</span> <br>
+    <label>Machine IP : </label> <span>{{machinenameip}}</span><br>
+    <label> Path: </label> <span>{{machineippath}}</span>
+
+</div>
+            
+                <select ng-show="machineipstatus == 0" ng-model="files.machinefilename" ng-options="machin.machine_name for machin in machineList">
+                    <option value="">select</option>
+                  </select>
+                    <input type="file" id="file1" name="file" multiple
+                    ng-files="getTheFiles($files)" />
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" ng-show="machineipstatus == 0"   ng-disabled="files.machinefilename == null" ng-click="uploadFiles(files.machinefilename)">Upload</button>
+                  <button type="button" class="btn btn-primary" ng-show="machineipstatus == 1"  ng-click="fileupdate(files.machinefilename)">Update</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
